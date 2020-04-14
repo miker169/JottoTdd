@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import checkPropTypes from 'check-prop-types';
 
 import Congrats from './congrats';
 import {checkProps} from '../test/utils';
