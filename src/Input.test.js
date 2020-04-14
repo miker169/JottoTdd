@@ -24,13 +24,15 @@ describe('Input', () => {
   });
 
   describe('state controlled input field', () => {
-    test('state updates with value of input box upon change', () => {
-      const mockSetCurrentGuess = jest.fn();
+    let mockSetCurrentGuess = jest.fn();;
+    let queryByTestId;
+    beforeEach(()=> {
+      mockSetCurrentGuess.mockClear();
       React.useState = jest.fn(() => ["", mockSetCurrentGuess]);
-
-      const { queryByTestId } = setup();
+      ({ queryByTestId } = setup());
+    });
+    test('state updates with value of input box upon change', () => {
       const inputBox = queryByTestId('input-box');
-
       const mockEvent = { target: {value: 'train'}};
 
       fireEvent.change(inputBox, mockEvent);
@@ -38,5 +40,13 @@ describe('Input', () => {
       expect(mockSetCurrentGuess).toHaveBeenCalledWith('train');
 
     })
-  })
-})
+    test('sets currentGuess to an empty string when called', () => {
+      const submitBtn = queryByTestId('submit-button');
+      userEvent.click(submitBtn, { preventDefault() {}});
+
+      expect(mockSetCurrentGuess).toHaveBeenCalledWith('');
+
+    })
+  });
+
+});
