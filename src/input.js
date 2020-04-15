@@ -22,7 +22,7 @@ const Input = ({secretWord}) => {
           }}
           className="btn btn-primary mb-2" >
           Submit
-        </button>
+        </button> 
       </form>
     </div>
   )
