@@ -59,4 +59,19 @@ describe('<GuessedWords/>', () => {
       expect(guessedWords.length).toBe(guessedWords.length);
     });
   });
+
+  describe('language picker', ()=> {
+    test('correctly renders guess instructions in english', ()=> {
+      const {queryByTestId} = setup({guessedWords: []});
+      const guessInstructions = queryByTestId('guess-instructions');
+      expect(guessInstructions.textContent).toBe('Try to guess the secret word!');
+    });
+    test('correctly renders guess instructions string in emoji' , () => {
+      const mockUseContext = jest.fn().mockReturnValue('emoji');
+      React.useContext = mockUseContext;
+      const {queryByTestId} = setup({guessedWords: []});
+      const guessInstructions = queryByTestId('guess-instructions');
+      expect(guessInstructions.textContent).toBe('🤔🤫🔤');
+    });
+  });
 });
