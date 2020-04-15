@@ -3,18 +3,24 @@ import {fireEvent, render} from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import Input from "./input";
 import { checkProps} from "../test/utils";
+import LanguageContext from "./contexts/LanguageContext";
 
 describe('Input', () => {
   const defaultProps = {
     secretWord: 'party'
   };
-  const setup = (secretWord='party') => {
-
-    return render(<Input  secretWord={secretWord}/>)
+  const setup = ({secretWord, language}) => {
+    secretWord = secretWord || 'party';
+    language = language || 'en';
+    return render(
+      <LanguageContext.Provider value={language}>
+        <Input  secretWord={secretWord}/>
+      </LanguageContext.Provider>
+    )
   }
 
   test('renders without error', () => {
-    const { queryByTestId } = setup();
+    const { queryByTestId } = setup({});
     const component = queryByTestId('component-input');
     expect(component).toBeTruthy();
   });
@@ -29,7 +35,7 @@ describe('Input', () => {
     beforeEach(()=> {
       mockSetCurrentGuess.mockClear();
       React.useState = jest.fn(() => ["", mockSetCurrentGuess]);
-      ({ queryByTestId } = setup());
+      ({ queryByTestId } = setup({}));
     });
     test('state updates with value of input box upon change', () => {
       const inputBox = queryByTestId('input-box');
@@ -47,6 +53,32 @@ describe('Input', () => {
       expect(mockSetCurrentGuess).toHaveBeenCalledWith('');
 
     })
+  });
+
+  describe('languagepicker', () => {
+    test('Correctly renders submit string in english', () => {
+      const {queryByTestId } = setup({});
+      const component = queryByTestId('submit-button');
+      expect(component.textContent).toBe('Submit');
+    });
+
+    test('Correctly renders submit string in emoji', () => {
+      const {queryByTestId } = setup({secretWord: 'party', language: 'emoji'});
+      const component = queryByTestId('submit-button');
+      expect(component.textContent).toBe('🚀');
+    });
+
+    test('Correctly renders the placeholder in english', () =>{
+      const {queryByTestId } = setup({});
+      const component = queryByTestId('input-box');
+      expect(component.placeholder).toBe('enter guess');
+    });
+
+    test('Correctly renders placeholder string in emoji', () => {
+      const {queryByTestId } = setup({secretWord: 'party', language: 'emoji'});
+      const component = queryByTestId('input-box');
+      expect(component.placeholder).toBe('⌨️🤔');
+    });
   });
 
 });

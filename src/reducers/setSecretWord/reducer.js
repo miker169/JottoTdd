@@ -12,6 +12,8 @@ export const reducer = (state, {type, payload}) => {
   switch(type){
     case "setSecretWord":
       return {...state, secretWord: payload}
+    case "setLanguage":
+      return { ...state, language: payload}
     default:
       throw new Error(`Invalid action type: ${type}`)
   }

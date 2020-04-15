@@ -17,7 +17,7 @@ const setup = (secretWord="party") => {
 
   const mockUseReducer = jest.fn()
     .mockReturnValue([
-      { secretWord },
+      { secretWord, language: 'en' },
       jest.fn()
     ]);
 
@@ -82,5 +82,9 @@ describe('App', () => {
       expect(spinnerComponent).toBeTruthy();
     });
   })
+
+  describe('languagePicker', () => {
+
+  });
 
 });
