@@ -4,17 +4,21 @@ import userEvent from "@testing-library/user-event";
 import Input from "./input";
 import { checkProps} from "../test/utils";
 import LanguageContext from "./contexts/LanguageContext";
+import successContext from "./contexts/successContext";
+import guessedWordsContext from "./contexts/guessedWordsContext";
 
 describe('Input', () => {
-  const defaultProps = {
-    secretWord: 'party'
-  };
-  const setup = ({secretWord, language}) => {
+  const setup = ({secretWord, language, success}) => {
     secretWord = secretWord || 'party';
     language = language || 'en';
+    success = success || false;
     return render(
       <LanguageContext.Provider value={language}>
-        <Input  secretWord={secretWord}/>
+        <successContext.SuccessProvider value={[success, jest.fn()]}>
+          <guessedWordsContext.GuessedWordsProvider>
+            <Input  secretWord={secretWord}/>
+          </guessedWordsContext.GuessedWordsProvider>
+        </successContext.SuccessProvider>
       </LanguageContext.Provider>
     )
   }
@@ -80,5 +84,10 @@ describe('Input', () => {
       expect(component.placeholder).toBe('⌨️🤔');
     });
   });
+
+  test('input component does not show when success is true', ()=> {
+    const {queryByTestId} = setup({secretWord: 'party', success:true});
+    expect(queryByTestId('component-input')).toBeFalsy();
+  })
 
 });

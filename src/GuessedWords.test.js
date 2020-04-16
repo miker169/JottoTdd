@@ -2,27 +2,27 @@ import React from 'react';
 import { render } from '@testing-library/react';
 
 import GuessedWords from "./GuessedWords";
-import { checkProps } from "../test/utils";
+
+import guessedWordsContext from "./contexts/guessedWordsContext";
 
 describe('<GuessedWords/>', () => {
 
-  const defaultProps = {
-   guessedWords: [{guessedWord: 'train', letterMatchCount: 3}],
-  };
+  // const defaultProps = {
+  //  guessedWords: [{guessedWord: 'train', letterMatchCount: 3}],
+  // };
 
-  const setup = (props={}) => {
-    const setupProps = {...defaultProps, ...props};
-    return render(<GuessedWords {...setupProps }/>);
+  const setup = (guessedWords) => {
+    const mockUseGuessedWords = jest.fn().mockReturnValue(
+      [guessedWords], jest.fn()
+    );
+    guessedWordsContext.useGuessedWordsContext = mockUseGuessedWords;
+    return render(<GuessedWords />);
   }
-
-  test('does not throw warning with expected props', () => {
-    checkProps(GuessedWords, defaultProps);
-  });
 
   describe('if there are no words guessed', () => {
     let queryByTestId;
     beforeEach(() => {
-      ({queryByTestId} = setup({guessedWords: []}));
+      ({queryByTestId} = setup([]));
     });
     test('renders without error', () => {
       const component = queryByTestId('component-guessed-words');
@@ -44,7 +44,7 @@ describe('<GuessedWords/>', () => {
     let queryByTestId;
 
     beforeEach(() => {
-      ({queryByTestId} = setup({guessedWords}));
+      ({queryByTestId} = setup(guessedWords));
     });
     test('renders without error', () => {
       const component = queryByTestId('component-guessed-words');
@@ -62,14 +62,14 @@ describe('<GuessedWords/>', () => {
 
   describe('language picker', ()=> {
     test('correctly renders guess instructions in english', ()=> {
-      const {queryByTestId} = setup({guessedWords: []});
+      const {queryByTestId} = setup([]);
       const guessInstructions = queryByTestId('guess-instructions');
       expect(guessInstructions.textContent).toBe('Try to guess the secret word!');
     });
     test('correctly renders guess instructions string in emoji' , () => {
       const mockUseContext = jest.fn().mockReturnValue('emoji');
       React.useContext = mockUseContext;
-      const {queryByTestId} = setup({guessedWords: []});
+      const {queryByTestId} = setup([]);
       const guessInstructions = queryByTestId('guess-instructions');
       expect(guessInstructions.textContent).toBe('🤔🤫🔤');
     });

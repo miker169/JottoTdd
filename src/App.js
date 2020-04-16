@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-//import './App.css';
 
+import hookActions from "./actions/hookActions";
 import { SetSecretWordReducer } from "./reducers";
+
 import GuessedWords from "./GuessedWords";
 import Congrats from "./congrats";
 import Input from './input';
-import hookActions from "./actions/hookActions";
-import languageContext from './contexts/LanguageContext';
+
 import LanguagePicker from "./LanguagePicker";
+
+import languageContext from './contexts/LanguageContext';
+import successContext from "./contexts/successContext";
+import guessedWordsContext from "./contexts/guessedWordsContext";
 
 function App() {
   const [state, dispatch] = React.useReducer(
@@ -38,10 +42,16 @@ function App() {
   return (
     <div className="container" data-testid="component-app">
       <h1>Jotto</h1>
+      <p>The secret word is {state.secretWord}</p>
       <languageContext.Provider value={state.language}>
-        <LanguagePicker setLanguage={setLanguage}>
-          <Input secretWord={state.secretWord}/>
-        </LanguagePicker>
+        <LanguagePicker setLanguage={setLanguage} />
+        <guessedWordsContext.GuessedWordsProvider>
+          <successContext.SuccessProvider>
+            <Congrats />
+            <Input secretWord={state.secretWord}/>
+          </successContext.SuccessProvider>
+          <GuessedWords />
+        </guessedWordsContext.GuessedWordsProvider>
       </languageContext.Provider>
     </div>
   )
